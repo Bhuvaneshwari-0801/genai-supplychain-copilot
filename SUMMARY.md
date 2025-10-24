@@ -1,134 +1,61 @@
-# 📋 Complete Summary - What Was Done
+# Solution Summary — GenAI SupplyChain Copilot
 
-## 🎯 What I Accomplished
+**Elevator pitch:** An agentic copilot on **Amazon Bedrock (Strands Agents + AgentCore)** that converts messy supplier replies into **awards and resilient logistics plans**—with **explainable** decisions and an **audit trail** back to Salesforce and DynamoDB.
 
-### 1. **Removed Hardcoded Values**
-- ✅ Extracted all secrets from `*_hardcoded.py` files
-- ✅ Created environment variable system using `.env`
-- ✅ Built centralized `config.py` for configuration management
-- ✅ Validated all integrations work with new system
+![Process Flow](docs/images/process-flow.png)
 
-### 2. **Created Clean GitHub Repository**
-- ✅ Repository: https://github.com/khan-cloudgeek/genai-supplychain-copilot
-- ✅ Pushed 12 clean files without any secrets
-- ✅ Proper `.gitignore` to protect sensitive data
-- ✅ Comprehensive documentation
+## Who it’s for (personas)
+- **Category/Sourcing Manager** – wants clean, comparable quotes, faster awards, and fewer surprises.
+- **Logistics Planner** – wants cost/ETA/CO₂ trade‑offs and early disruption signals.
+- **Procurement Ops/Leadership** – wants explainable decisions and traceability.
 
-### 3. **Local Testing System**
-- ✅ `test_env_setup.py` - Environment validation
-- ✅ `LOCAL_TEST=1` mode for workflow testing
-- ✅ Full end-to-end testing capability
-- ✅ Salesforce authentication validation
+## Problem → Impact
+- Quotes arrive as email/PDF/CSV → manual parsing → slow decisions and late risk detection → rush freight.
+- Impact: delayed RFQs/POs, higher logistics spend, weak auditability.
 
-## 📁 Folder Structure Created
+## What we built
+- **Six agents + one Supervisor** coordinating RFQ→selection→negotiation→logistics.
+- **Models (Bedrock):** `amazon.nova-pro-v1:0` (Supervisor), `anthropic.claude-3-5-haiku-20241022-v1:0` (extraction/outreach), `anthropic.claude-3-5-sonnet-20241022-v2:0` (evaluation/negotiation/logistics).
+- **Tools/data:** Salesforce, DynamoDB, Gmail API, Amazon SES, S3/Textract, Slack, Mapbox, Open‑Meteo, Tavily, Wikipedia, Folium.
 
-### `/github-repo-files/` (14 files)
-**Exact copy of what's in GitHub repository**
+## End‑to‑end at a glance
+1) **Ingest** supplier replies from Gmail; extract `{unit_price, currency, lead_time_days, incoterms, valid_till, notes}`.  
+2) **Upsert** RFQ/Account in **Salesforce**, seed **DynamoDB**.  
+3) **Shortlist** and send RFQs; gather quotes; **normalize** to a comparable schema.  
+4) **Score & explain** trade‑offs (price, delivery, quality, sustainability).  
+5) **Negotiate** (counter‑offers/awards) and notify via **Slack/Email**.  
+6) **Plan logistics** (ALL_OCEAN vs SPLIT_AIR_OCEAN) with cost/ETA/CO₂; check **news/weather** along the lane; render a **map**.  
+7) **Summarize** and **audit** the full trail.
 
-#### Core Application (5 files)
-- `supply-chain-master-agent.py` - Main orchestrator + 6 agents
-- `master-agent-runtime-entrypoint.py` - AgentCore runtime
-- `route_mapper.py` - Route mapping utilities  
-- `config.py` - Configuration management
-- `supply_chain_clean.py` - Clean utility functions
+## Why this is GenAI (not just automation)
+- **Agentic orchestration** with tool‑use and role‑specialization.  
+- **Explainable selection** and rationale persisted to audit.  
+- **Risk‑aware** logistics driven by live signals (news/weather).
 
-#### Configuration (3 files)
-- `.env.example` - Environment template (safe for GitHub)
-- `.gitignore` - Security rules
-- `requirements.txt` - Dependencies
+## Fit with **AWS Supply Chain (ASC)**
+- **Complementary:** We handle the upstream **tactical sourcing loop** and export clean snapshots (S3) that ASC can ingest for planning/visibility.  
+- **Closed loop:** ASC risk/visibility signals can feed the **Supervisor** to adjust negotiation timing or routing choices.  
+- **N‑Tier:** Use ASC for supplier collaboration post‑award; our agents keep doing supplier comms and exception handling.
 
-#### Documentation (4 files)
-- `README.md` - Main documentation
-- `PROJECT_SUMMARY.md` - Project overview
-- `LOCAL_TESTING.md` - Testing guide
-- `GITHUB_WORKFLOW.md` - Git workflow guide
+## Wow factors
+- Inbox → **Award** in one flow with transparent scoring.  
+- **Resilient routing** with disruption sensing and a shareable map.  
+- **Human‑readable** outputs (emails/Slack) + leadership summary.
 
-#### Testing (2 files)
-- `test_env_setup.py` - Environment validation
-- `setup_project.py` - Setup utilities
-
-## 🔄 How to Modify & Push Changes
-
-### **Step 1: Setup**
+## Try it (quick)
 ```bash
-cd github-repo-files
-cp ../.env .  # Copy your credentials (never commit this)
-```
-
-### **Step 2: Make Changes**
-```bash
-nano supply-chain-master-agent.py  # Edit any file
-```
-
-### **Step 3: Test Locally**
-```bash
-# Quick workflow test
-LOCAL_TEST=1 python master-agent-runtime-entrypoint.py
-
-# Environment validation
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env  # fill in keys
 python test_env_setup.py
 
-# Configuration test
-python -c "import config; config.validate_config()"
-```
-
-### **Step 4: Git Push**
-```bash
-git status                    # Check changes
-git add .                     # Add changes
-git commit -m "Your message"  # Commit
-git push origin master        # Push to GitHub
-```
-
-## 🧪 Local Testing Options
-
-### **Option A: Full Workflow Test**
-```bash
+# Local AgentCore entry
 LOCAL_TEST=1 python master-agent-runtime-entrypoint.py
-```
-*Tests complete RFQ workflow with all 6 agents*
 
-### **Option B: Environment Validation**
-```bash
-python test_env_setup.py
-```
-*Validates all credentials and connections*
-
-### **Option C: Component Tests**
-```bash
-python -c "import config; print('Config OK')"
-python -c "from route_mapper import create_route_map; print('Route mapper OK')"
+# Full orchestrator demo
+python supply-chain-master-agent.py
 ```
 
-## 🛡️ Security Features
-
-### **What's Protected:**
-- ✅ `.env` file (contains real credentials) - **NEVER COMMITTED**
-- ✅ All API keys, tokens, passwords in environment variables
-- ✅ Comprehensive `.gitignore` rules
-- ✅ GitHub push protection compliance
-
-### **What's Safe in GitHub:**
-- ✅ `.env.example` - Template with placeholder values
-- ✅ All Python code - No hardcoded secrets
-- ✅ Documentation and guides
-- ✅ Configuration management code
-
-## 🎉 Final Status
-
-### **✅ GitHub Repository**
-- Clean, secure, no secrets
-- Complete documentation
-- Ready for collaboration
-
-### **✅ Local Testing**
-- Full workflow validation
-- Environment checking
-- Component testing
-
-### **✅ Future Workflow**
-- Easy modification process
-- Local testing before push
-- Secure credential management
-
-**Everything is ready for production use and future enhancements!** 🚀
+## Links
+- Repo: https://github.com/khan-cloudgeek/genai-supplychain-copilot  
+- Demo: https://youtu.be/I6AxMIVICbw
