@@ -1,3 +1,15 @@
+# Project Summary (updated)
+
+> **Docs Quick Links**  
+> • [README](./README.md) · [ARCHITECTURE](./ARCHITECTURE.md) · [INTEGRATIONS](./INTEGRATIONS.md) · [FAQ](./FAQ.md) · [ROADMAP](./ROADMAP.md) · [PITCH](./PITCH.md) · [REFERENCES](./REFERENCES.md)  
+> • Repo: https://github.com/khan-cloudgeek/genai-supplychain-copilot · Demo: https://youtu.be/I6AxMIVICbw
+
+### About this project
+This repository showcases a **GenAI, agentic RFQ→Award→Logistics copilot** built on **Amazon Bedrock (Strands Agents + AgentCore)**.  
+It complements **AWS Supply Chain (ASC)** by exporting cleaned sourcing outcomes to S3/ASC and pulling ASC risk signals back into negotiations and routing.
+
+---
+
 # GenAI SupplyChain Project - Environment Variable Conversion Summary
 
 ## 🎯 Project Overview

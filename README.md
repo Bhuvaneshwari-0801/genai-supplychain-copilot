@@ -1,280 +1,130 @@
 # GenAI SupplyChain Copilot
+**RFQ → Supplier Selection → Negotiation → Logistics — fully agentic on Amazon Bedrock (Strands Agents + AgentCore).**
 
-**✅ TESTED & VALIDATED - Ready for Production**
+- GitHub: https://github.com/khan-cloudgeek/genai-supplychain-copilot  
+- 🎥 Solution Demo: https://youtu.be/I6AxMIVICbw  
+- 🏆 Built for: AWS Global Hackathon — https://aws-agent-hackathon.devpost.com
 
-A comprehensive GenAI-powered supply chain management system using Amazon Bedrock Agents, Strands Agents, and multiple LLMs for end-to-end RFQ processing and optimization.
+> This doesn’t replace your supply-chain stack — it **amplifies** it with GenAI.  
+> The system normalizes messy supplier emails, scores quotes with explainable criteria, drafts counter-offers, plans logistics (cost/ETA/CO₂), and logs an auditable trail.
 
-## 🏗️ Architecture Overview
-
-This system implements a multi-agent architecture with 6 specialized agents:
-
-- **Agent 0**: Email Intelligence Agent - Extracts RFQ data from emails
-- **Agent 1**: RFQ Update Agent - Creates/updates RFQ records in Salesforce
-- **Agent 2**: Supplier Selection Agent - Finds and contacts suppliers
-- **Agent 3**: Quotation Analysis Agent - Processes supplier quotations and analysis
-- **Agent 4**: Negotiation Agent - Selects optimal suppliers
-- **Agent 5**: Routing Optimization Agent - Optimizes shipping routes
-- **Orchestrator**: Master coordinator managing all agents
-
-## 🔧 Environment Variables Setup
-
-### 1. Install Dependencies
-
-```bash
-pip install python-dotenv
-```
-
-### 2. Create Environment Configuration
-
-Copy the `.env.example` file to `.env` and update with your actual credentials:
-
-```bash
-cp .env.example .env
-```
-
-### 3. Required Environment Variables
-
-Update the following variables in your `.env` file:
-
-#### API Keys
-```env
-AIRLABS_API_KEY=your_actual_airlabs_api_key
-MAPBOX_API_KEY=your_actual_mapbox_api_key
-TAVILY_API_KEY=your_actual_tavily_api_key
-```
-
-#### Slack Configuration
-```env
-SLACK_BOT_TOKEN=xoxb-your-actual-slack-bot-token
-SLACK_CHANNEL=#your-channel-name
-```
-
-#### Email Configuration
-```env
-SES_SENDER=your-verified-ses-email@domain.com
-```
-
-#### Salesforce Configuration
-```env
-SF_CLIENT_ID=your_salesforce_connected_app_client_id
-SF_CLIENT_SECRET=your_salesforce_connected_app_client_secret
-SF_USERNAME=your_salesforce_username
-SF_PASSWORD=your_salesforce_password
-SF_SECURITY_TOKEN=your_salesforce_security_token
-```
-
-## 🧪 Testing Your Setup
-
-Run the environment validation script:
-
-```bash
-python test_env_setup.py
-```
-
-This will:
-- ✅ Check all required environment variables
-- ✅ Validate configuration imports
-- ✅ Test Salesforce authentication
-- ✅ Provide setup status report
-
-## 📁 Project Structure
-
-```
-supplychain_hardcoded_v1_q/
-├── .env                                    # Environment variables (DO NOT COMMIT)
-├── .env.example                           # Environment variables template
-├── config.py                              # Configuration management
-├── supply-chain-master-agent.py           # Main agent system (env vars)
-├── master-agent-runtime-entrypoint.py     # AgentCore runtime entrypoint (env vars)
-├── route_mapper_clean.py                  # Route mapping utilities (env vars)
-├── requirements.txt                       # Python dependencies
-├── test_env_setup.py                     # Environment validation script
-├── setup_project.py                      # Project setup script
-├── README.md                             # This file
-└── *_hardcoded.py                        # Original files with hardcoded values (backup)
-```
-
-## 🚀 Running the Application
-
-### Local Development
-
-1. **Validate Environment**:
-   ```bash
-   python test_env_setup.py
-   ```
-
-2. **Run Local Test**:
-   ```bash
-   LOCAL_TEST=1 python master-agent-runtime-entrypoint.py
-   ```
-
-3. **Start AgentCore Runtime**:
-   ```bash
-   python master-agent-runtime-entrypoint.py
-   ```
-
-### SageMaker Notebook
-
-1. **Install Dependencies**:
-   ```python
-   !pip install -r requirements.txt
-   ```
-
-2. **Import and Run**:
-   ```python
-   from supply_chain_clean import *
-   
-   # Run orchestrator workflow
-   result = run_orchestrator_workflow("Execute full RFQ workflow")
-   print(result)
-   ```
-
-### Docker Deployment
-
-1. **Create Dockerfile**:
-   ```dockerfile
-   FROM python:3.9-slim
-   
-   WORKDIR /app
-   COPY requirements.txt .
-   RUN pip install -r requirements.txt
-   
-   COPY . .
-   
-   EXPOSE 8080
-   CMD ["python", "master-agent-runtime-entrypoint.py"]
-   ```
-
-2. **Build and Run**:
-   ```bash
-   docker build -t genai-supplychain .
-   docker run -p 8080:8080 --env-file .env genai-supplychain
-   ```
-
-## 🔐 Security Best Practices
-
-### Environment Variables
-- ✅ Never commit `.env` files to version control
-- ✅ Use different credentials for different environments
-- ✅ Rotate API keys and tokens regularly
-- ✅ Use AWS Secrets Manager for production deployments
-
-### Git Configuration
-Add to your `.gitignore`:
-```gitignore
-.env
-*.env
-credentials.json
-token.pickle
-*_hardcoded.py
-```
-
-## 🛠️ Configuration Details
-
-### Required Services Setup
-
-1. **Salesforce Connected App**:
-   - Create Connected App in Salesforce
-   - Enable OAuth settings
-   - Get Client ID and Client Secret
-   - Configure callback URLs
-
-2. **AWS Services**:
-   - SES: Verify sender email address
-   - DynamoDB: Create required tables
-   - Bedrock: Enable model access
-
-3. **Third-party APIs**:
-   - AirLabs: Get API key for flight data
-   - MapBox: Get API key for routing
-   - Tavily: Get API key for web search
-   - Slack: Create bot and get token
-
-### DynamoDB Tables Required
-- `scm_suppliers`
-- `scm_negotiation` 
-- `scm_routing_details`
-
-## 🧩 Agent Workflow
-
-```mermaid
-graph TD
-    A[Agent 0: Email Intelligence] --> B[Agent 1: RFQ Update]
-    B --> C[Agent 2: Supplier Selection]
-    C --> D[Agent 3: Quotation Analysis]
-    D --> E[Agent 4: Negotiation]
-    E --> F[Agent 5: Routing Optimization]
-    G[Orchestrator] --> A
-```
-
-## 📊 Model Configuration
-
-The system uses multiple LLMs:
-- **Amazon Nova Pro**: `us.amazon.nova-pro-v1:0` (Orchestrator)
-- **Claude 3.5 Sonnet**: `us.anthropic.claude-3-5-sonnet-20241022-v2:0` (Complex analysis)
-- **Claude 3.5 Haiku**: `us.anthropic.claude-3-5-haiku-20241022-v1:0` (Fast processing)
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Missing Environment Variables**:
-   ```bash
-   python test_env_setup.py
-   ```
-
-2. **Salesforce Authentication Failed**:
-   - Verify Client ID and Secret
-   - Check username/password/security token
-   - Ensure Connected App is configured correctly
-
-3. **API Rate Limits**:
-   - Check API key quotas
-   - Implement retry logic
-   - Use appropriate delays between calls
-
-4. **DynamoDB Access Issues**:
-   - Verify AWS credentials
-   - Check IAM permissions
-   - Ensure tables exist
-
-## 📝 Development Notes
-
-### Converting from Hardcoded Values
-
-The original files with hardcoded values are preserved as `*_hardcoded.py`. The conversion process:
-
-1. **Extracted all sensitive values** to environment variables
-2. **Created configuration module** (`config.py`) for centralized management
-3. **Updated import statements** to use configuration
-4. **Added validation functions** to ensure proper setup
-5. **Created test scripts** for validation
-
-### Key Changes Made
-
-- ✅ Replaced hardcoded API keys with `os.getenv()`
-- ✅ Centralized configuration in `config.py`
-- ✅ Added environment validation
-- ✅ Updated all file imports
-- ✅ Added `python-dotenv` dependency
-- ✅ Created comprehensive documentation
-
-## 🎯 Next Steps
-
-1. **Update .env file** with your actual credentials
-2. **Test all integrations** using the validation script
-3. **Deploy to your target environment** (SageMaker/ECS/etc.)
-4. **Set up monitoring** and logging
-5. **Configure CI/CD pipeline** for deployments
-
-## 📞 Support
-
-For issues or questions:
-1. Check the troubleshooting section
-2. Validate environment setup with test script
-3. Review AWS and third-party service configurations
-4. Check CloudWatch logs for runtime issues
+![Agentic Workflow](docs/images/agentic-workflow.png)
 
 ---
 
-**⚠️ Important**: This system handles sensitive business data. Ensure proper security measures are in place before production deployment.
+## Why this matters (in plain English)
+Procurement starts in messy places (email/PDF/CSV). Decisions are slow, disruptions hit late, and costs spike. This copilot turns unstructured replies into structured RFQs, compares suppliers, negotiates, and proposes resilient routes — all while writing back to your systems and notifying stakeholders.
+
+---
+
+## Architecture at a glance
+![Technical Architecture](docs/images/tech-architecture.png)
+
+- **Strands Agents** coordinated by **Amazon Bedrock AgentCore**
+- **Models (Bedrock)**:  
+  - `amazon.nova-pro-v1:0` — Supervisor/Orchestrator  
+  - `anthropic.claude-3-5-haiku-20241022-v1:0` — Email/RFQ extraction & outreach  
+  - `anthropic.claude-3-5-sonnet-20241022-v2:0` — Evaluation, negotiation, logistics
+
+**Key integrations:** Salesforce, DynamoDB, SES, Slack, Gmail, S3/Textract, Mapbox, Open-Meteo, Tavily, Wikipedia, Folium (map).
+
+---
+
+## Agents (0–5) + Supervisor (6)
+| Agent | Purpose (one-liner) |
+|---|---|
+| **A0 – Email Intelligence** | Fetch supplier emails (Gmail) and extract structured RFQ data (SKUs, qty, price, terms). |
+| **A1 – RFQ Update** | Validate & upsert RFQs in Salesforce; standardize entries in DynamoDB. |
+| **A2 – Supplier Selection** | Score suppliers on cost/delivery/quality/sustainability; shortlist for progression. |
+| **A3 – Quotation Normalization & Analysis** | Normalize quotes into comparable schema; benchmark with market/wiki signals. |
+| **A4 – Negotiation & Communication** | Draft optimized counter-offers/emails/Slack with sentiment cues. |
+| **A5 – Logistics & Routing Optimization** | Compute ocean vs split air+ocean, cost/ETA/CO₂; lane risk via news/weather. |
+| **A6 – Supervisor / Orchestrator** | Plans, triggers, and monitors all agents; handles data hand-offs, retries, and summary. |
+
+---
+
+## Process flow
+![Process Flow](docs/images/process-flow.png)
+
+1. Buyer creates RFQ in Salesforce → suppliers receive emails.  
+2. Replies arrive (email/PDF/CSV) → normalized `{unit_price, currency, lead_time_days, incoterms, valid_till, notes}`.  
+3. Quotes are scored; counter-offer/award drafted.  
+4. Logistics plan proposes mode and route with risk cues; summary + audit written back.  
+5. Light Slack notifications at key steps.
+
+---
+
+## How this complements **AWS Supply Chain (ASC)**
+- **Side-car to ASC**: We handle the **tactical sourcing loop** (RFQ→award→routing). Cleaned outputs (RFQ facts, scored quotes, awards, shipment options) can land in **S3** and be mapped into the **ASC Data Lake** for planning/visibility.  
+- **Closed loop**: ASC risk and order-tracking insights can feed back into our Supervisor to time negotiations or switch routing (e.g., split air+ocean).  
+- **N-Tier collaboration**: After award, partners can use **ASC N-Tier Visibility** for PO/forecast/status while our agents continue supplier comms (email/Slack).  
+- **Resilience**: ASC drives network resiliency; we add **operational resilience** with disruption sensing (news/weather) and explainable choices.
+
+---
+
+---
+## Overview Deck
+[Download the overview (PDF)](docs/deck/overview.pdf)
+
+<p align="center">
+  <a href="docs/deck/overview.pdf">
+    <img src="docs/deck/overview-thumb.png" width="700" alt="Overview Deck thumbnail">
+  </a>
+  <br><em>Open the full deck (PDF)</em>
+</p>
+---
+
+## Highlights
+- **Inbox → Award, end-to-end** with explainable scoring and **audit trail** (Salesforce + DynamoDB).  
+- **Risk-aware routing** with news & weather checks and a shareable **interactive map**.  
+- **Human-readable outputs** (emails/Slack) + one-click summary for leadership.  
+- **Secure by default**: `.env.example` + `test_env_setup.py` validate configuration (no secrets in Git).
+
+---
+
+## Quickstart
+
+### 1) Install
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # fill in your keys/tokens
+python test_env_setup.py
+```
+
+### 2) Local runtime (AgentCore entrypoint)
+```bash
+LOCAL_TEST=1 python master-agent-runtime-entrypoint.py
+```
+
+### 3) Full orchestrator (demo)
+```bash
+python supply-chain-master-agent.py
+```
+
+> Models & regions are configured via env; see `config.py` (and `requirements.txt` for deps).
+
+---
+
+## Repo map (selected)
+- `supply-chain-master-agent.py` — Orchestrator + all agents/tools  
+- `master-agent-runtime-entrypoint.py` — AgentCore Runtime entrypoint  
+- `route_mapper.py` — Mapbox/Folium route visualization  
+- `requirements.txt` — Dependencies  
+- `test_env_setup.py` — Environment validation  
+- `docs/images/…` — Diagrams (agentic-workflow.png, tech-architecture.png, process-flow.png)
+
+---
+
+## Roadmap (high level)
+- **Kiro** & **Amazon Q** front-ends  
+- Guardrails + RAG over SOPs/POs  
+- Predictive disruption engine; Nova Act for autonomous actions  
+- Deeper ASC data-lake mapping
+
+---
+
+## Links
+- **AgentCore Runtime** quickstart: see `REFERENCES.md`  
+- **Strands Agents** docs: see `REFERENCES.md`  
+- **Hackathon**: https://aws-agent-hackathon.devpost.com
