@@ -1,0 +1,13 @@
+bedrock-agentcore
+strands-agents
+boto3
+requests
+pandas
+geopy
+slack_sdk
+folium
+google-api-python-client
+google-auth
+google-auth-oauthlib
+IPython
+python-dotenv
