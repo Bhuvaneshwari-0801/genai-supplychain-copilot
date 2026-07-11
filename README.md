@@ -12,7 +12,7 @@
 
 ---
 
-## Why this matters (in plain English)
+## Why this matters
 Procurement starts in messy places (email/PDF/CSV). Decisions are slow, disruptions hit late, and costs spike. This copilot turns unstructured replies into structured RFQs, compares suppliers, negotiates, and proposes resilient routes — all while writing back to your systems and notifying stakeholders.
 
 ---
@@ -54,7 +54,7 @@ Procurement starts in messy places (email/PDF/CSV). Decisions are slow, disrupti
 
 ---
 
-## How this complements **AWS Supply Chain (ASC)**
+## How this complements **AWS Supply Chain**
 - **Side-car to ASC**: We handle the **tactical sourcing loop** (RFQ→award→routing). Cleaned outputs (RFQ facts, scored quotes, awards, shipment options) can land in **S3** and be mapped into the **ASC Data Lake** for planning/visibility.  
 - **Closed loop**: ASC risk and order-tracking insights can feed back into our Supervisor to time negotiations or switch routing (e.g., split air+ocean).  
 - **N-Tier collaboration**: After award, partners can use **ASC N-Tier Visibility** for PO/forecast/status while our agents continue supplier comms (email/Slack).  
@@ -106,7 +106,7 @@ python supply-chain-master-agent.py
 
 ---
 
-## Repo map (selected)
+## Repo map (high level)
 - `supply-chain-master-agent.py` — Orchestrator + all agents/tools  
 - `master-agent-runtime-entrypoint.py` — AgentCore Runtime entrypoint  
 - `route_mapper.py` — Mapbox/Folium route visualization  
