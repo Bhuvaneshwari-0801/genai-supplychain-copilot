@@ -1,7 +1,7 @@
 # GenAI SupplyChain Copilot
 **RFQ → Supplier Selection → Negotiation → Logistics — fully agentic on Amazon Bedrock (Strands Agents + AgentCore).**
 
-- GitHub: https://github.com/khan-cloudgeek/genai-supplychain-copilot  
+- GitHub: https://github.com/Bhuvaneshwari-0801/genai-supplychain-copilot.git 
 - 🎥 Solution Demo: https://youtu.be/I6AxMIVICbw  
 - 🏆 Built for: AWS Global Hackathon — https://aws-agent-hackathon.devpost.com
 
